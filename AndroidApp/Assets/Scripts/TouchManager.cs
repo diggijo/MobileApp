@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class TouchManager : MonoBehaviour
 {
-    float touchTimer = 0;
-    bool hasMoved = false;
-    float MaxTapTime = 1f;
-    GestureAction actOn;
+    private float touchTimer = 0;
+    private bool hasMoved = false;
+    private float MaxTapTime = 1f;
+    private GestureAction actOn;
 
     void Start()
     {
@@ -28,6 +28,7 @@ public class TouchManager : MonoBehaviour
                         break;
                     case TouchPhase.Moved:
                         hasMoved = true;
+
                         break;
                     case TouchPhase.Stationary:
                         touchTimer += Time.deltaTime;
