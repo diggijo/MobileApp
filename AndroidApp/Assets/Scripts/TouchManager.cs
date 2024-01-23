@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 
 public class TouchManager : MonoBehaviour
@@ -18,23 +19,31 @@ public class TouchManager : MonoBehaviour
     {
         if(Input.touchCount > 0)
         {
-            foreach(Touch t in Input.touches)
+            foreach (Touch t in Input.touches)
             {
                 switch (t.phase)
                 {
                     case TouchPhase.Began:
-                        hasMoved = false;
+
                         touchTimer = 0f;
+
                         break;
                     case TouchPhase.Moved:
+
                         hasMoved = true;
+
+                        //actOn.drag(t.position);
 
                         break;
                     case TouchPhase.Stationary:
+
                         touchTimer += Time.deltaTime;
+
                         break;
                     case TouchPhase.Ended:
-                        if(touchTimer < MaxTapTime && !hasMoved)
+                        hasMoved = false;
+
+                        if (touchTimer < MaxTapTime && !hasMoved)
                         {
                             actOn.tapAt(t.position);
                         }

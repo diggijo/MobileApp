@@ -1,13 +1,17 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.PackageManager;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class GestureAction : MonoBehaviour
 {
     [SerializeField] GameObject circle;
     private float zPos = 10f;
-
+    private float hitDistance;
+    private Vector3 offset;
+    
     internal void tapAt(Vector2 position)
     {
         createCircle(position);
@@ -18,13 +22,13 @@ public class GestureAction : MonoBehaviour
         if(Physics.Raycast(ray, out hitInfo))
         {
             IInteractable objectHit = hitInfo.collider.gameObject.GetComponent<IInteractable>();
+            hitDistance = Vector3.Distance(hitInfo.transform.position, Camera.main.transform.position);
             objectHit.processTap();
         }
     }
 
-    internal void drag(Vector2 start, Vector2 finish)
+    internal void drag(Vector2 start)
     {
-
     }
 
     internal GameObject createCircle(Vector2 position)

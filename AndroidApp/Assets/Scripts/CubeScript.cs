@@ -4,13 +4,23 @@ using UnityEngine;
 
 public class CubeScript : MonoBehaviour, IInteractable
 {
-    public void processDrag()
+    public void deselectObject(GameObject selectedObject)
     {
-        throw new System.NotImplementedException();
+        GetComponent<Renderer>().material.color = Color.white;
+    }
+
+    public void processDrag(Vector3 newPos)
+    {
+        transform.position = newPos;
     }
 
     public void processTap()
     {
-        GetComponent<Renderer>().material.color = Color.red;
+        //GetComponent<Renderer>().material.color = Color.red;
+    }
+
+    public void selectObject(GameObject selectedObject)
+    {
+        GetComponent<Renderer>().material.color = Color.yellow;
     }
 }
