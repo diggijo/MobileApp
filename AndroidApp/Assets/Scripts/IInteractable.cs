@@ -6,5 +6,8 @@ public interface IInteractable
 {
     void processTap();
 
-    void processDrag();
+    void processDrag(Vector3 position);
+
+    void selectObject(GameObject selectedObject);
+    void deselectObject(GameObject selectedObject);
 }
