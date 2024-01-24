@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class TouchManager : MonoBehaviour
@@ -15,41 +16,27 @@ public class TouchManager : MonoBehaviour
         actOn = FindObjectOfType<GestureAction>();
     }
 
-    void Update()
+    public void HandleTouch(Touch t)
     {
-        if(Input.touchCount > 0)
+        switch (t.phase)
         {
-            foreach (Touch t in Input.touches)
-            {
-                switch (t.phase)
+            case TouchPhase.Began:
+                touchTimer = 0f;
+                break;
+            case TouchPhase.Moved:
+                hasMoved = true;
+                // actOn.drag(t.position);
+                break;
+            case TouchPhase.Stationary:
+                touchTimer += Time.deltaTime;
+                break;
+            case TouchPhase.Ended:
+                hasMoved = false;
+                if (touchTimer < MaxTapTime && !hasMoved)
                 {
-                    case TouchPhase.Began:
-
-                        touchTimer = 0f;
-
-                        break;
-                    case TouchPhase.Moved:
-
-                        hasMoved = true;
-
-                        //actOn.drag(t.position);
-
-                        break;
-                    case TouchPhase.Stationary:
-
-                        touchTimer += Time.deltaTime;
-
-                        break;
-                    case TouchPhase.Ended:
-                        hasMoved = false;
-
-                        if (touchTimer < MaxTapTime && !hasMoved)
-                        {
-                            actOn.tapAt(t.position);
-                        }
-                        break;
+                    actOn.tapAt(t.position);
                 }
-            }
+                break;
         }
     }
 }
