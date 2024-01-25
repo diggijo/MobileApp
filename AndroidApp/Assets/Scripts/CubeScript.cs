@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class CubeScript : MonoBehaviour, IInteractable
@@ -9,8 +10,8 @@ public class CubeScript : MonoBehaviour, IInteractable
         GetComponent<Renderer>().material.color = Color.red;
     }
 
-    public void processDrag(Vector3 newPos)
+    public void processDrag(Vector3 position)
     {
-        throw new System.NotImplementedException();
+        transform.position = position;
     }
 }

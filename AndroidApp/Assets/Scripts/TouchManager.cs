@@ -7,13 +7,19 @@ using UnityEngine;
 public class TouchManager : MonoBehaviour
 {
     private float touchTimer = 0;
+    private float moveTimer = 0;
     private bool hasMoved = false;
-    private float MaxTapTime = 1f;
+    private float maxTapTime = 0.25f;
     private GestureAction actOn;
 
     void Start()
     {
         actOn = FindObjectOfType<GestureAction>();
+
+        if (actOn == null)
+        {
+            Debug.LogError("GestureAction not found in the scene.");
+        }
     }
 
     public void HandleTouch(Touch t)
@@ -21,21 +27,40 @@ public class TouchManager : MonoBehaviour
         switch (t.phase)
         {
             case TouchPhase.Began:
+
                 touchTimer = 0f;
+                moveTimer = 0f;
+
                 break;
+
             case TouchPhase.Moved:
-                hasMoved = true;
-                // actOn.drag(t.position);
-                break;
-            case TouchPhase.Stationary:
-                touchTimer += Time.deltaTime;
-                break;
-            case TouchPhase.Ended:
-                hasMoved = false;
-                if (touchTimer < MaxTapTime && !hasMoved)
+
+                moveTimer += Time.deltaTime;
+
+                if(moveTimer > maxTapTime)
                 {
-                    actOn.tapAt(t.position);
+                    hasMoved = true;
+                    actOn.drag(t.position);
                 }
+
+                break;
+
+            case TouchPhase.Stationary:
+
+                touchTimer += Time.deltaTime;
+
+                break;
+
+            case TouchPhase.Ended:
+
+                if(!hasMoved)
+                {
+                    if (touchTimer < maxTapTime)
+                    {
+                        actOn.tapAt(t.position);
+                    }
+                }
+
                 break;
         }
     }

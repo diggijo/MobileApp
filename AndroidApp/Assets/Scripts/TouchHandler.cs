@@ -13,11 +13,11 @@ public class TouchHandler : MonoBehaviour
         {
             foreach (Touch t in Input.touches)
             {
-                if(t.phase == TouchPhase.Began)
+                if (t.phase == TouchPhase.Began)
                 {
                     touchCount++;
-                    GameObject newTouch = new GameObject("NewTouch" + touchCount.ToString());
-                    touchManager = newTouch.AddComponent<TouchManager>();
+                    GameObject newTouchObject = new GameObject("NewTouch" + touchCount.ToString());
+                    touchManager = newTouchObject.AddComponent<TouchManager>();
                 }
 
                 touchManager.HandleTouch(t);
