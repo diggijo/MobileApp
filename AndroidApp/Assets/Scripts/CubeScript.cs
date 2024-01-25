@@ -5,13 +5,14 @@ using UnityEngine;
 
 public class CubeScript : MonoBehaviour, IInteractable
 {
+    private bool selected = false;
     public void processTap()
     {
-        GetComponent<Renderer>().material.color = Color.red;
+        //GetComponent<Renderer>().material.color = Color.red;
     }
 
     public void processDrag(Vector3 position)
     {
-        transform.position = position;
+        transform.position = Camera.main.ScreenToWorldPoint(position);
     }
 }

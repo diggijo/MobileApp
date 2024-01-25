@@ -28,7 +28,7 @@ public class GestureAction : MonoBehaviour
         }
     }
 
-    internal void drag(Vector3 position)
+    internal void drag(Vector2 position)
     {
         Ray ray = Camera.main.ScreenPointToRay(position);
         RaycastHit hitInfo;
@@ -37,7 +37,9 @@ public class GestureAction : MonoBehaviour
         {
             IInteractable objectHit = hitInfo.collider.gameObject.GetComponent<IInteractable>();
             hitDistance = Vector3.Distance(hitInfo.transform.position, Camera.main.transform.position);
-            Vector3 newPos = new Vector3(position.x, position.y, hitDistance);
+            print("HitDistance: " + hitDistance);
+            print(hitInfo.transform.position.z - Camera.main.transform.position.z);
+            Vector3 newPos = new Vector3(position.x, position.y, (hitInfo.transform.position.z - Camera.main.transform.position.z));
             objectHit.processDrag(newPos);
         }
     }
@@ -50,5 +52,17 @@ public class GestureAction : MonoBehaviour
         circleGO.SetActive(true);
 
         return circleGO;
+    }
+
+    internal void selectObject(Vector2 position)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(position);
+        RaycastHit hitInfo;
+
+        if (Physics.Raycast(ray, out hitInfo))
+        {
+            IInteractable objectHit = hitInfo.collider.gameObject.GetComponent<IInteractable>();
+            print(objectHit);
+        }
     }
 }
