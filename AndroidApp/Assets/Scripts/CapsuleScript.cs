@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CapsuleScript : MonoBehaviour//, IInteractable
 {
+    private bool selected = false;
     public void processTap()
     {
         GetComponent<Renderer>().material.color = Color.blue;
@@ -11,6 +12,5 @@ public class CapsuleScript : MonoBehaviour//, IInteractable
 
     public void processDrag()
     {
-        throw new System.NotImplementedException();
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,6 +12,8 @@ public class TouchManager : MonoBehaviour
     private bool hasMoved = false;
     private float maxTapTime = 0.25f;
     private GestureAction actOn;
+    Touch myTouch;
+    TouchHandler myHandler;
 
     void Start()
     {
@@ -22,46 +25,65 @@ public class TouchManager : MonoBehaviour
         }
     }
 
-    public void HandleTouch(Touch t)
+    public void HandleTouch()
     {
-        switch (t.phase)
+        print("2");
+        switch (myTouch.phase)
         {
             case TouchPhase.Began:
-
+                print("3");
+                hasMoved = false;
                 touchTimer = 0f;
                 moveTimer = 0f;
+                //actOn.selectObject(myTouch.position);
 
                 break;
 
             case TouchPhase.Moved:
-
+                print("4");
                 moveTimer += Time.deltaTime;
 
                 if(moveTimer > maxTapTime)
                 {
                     hasMoved = true;
-                    actOn.drag(t.position);
+                    actOn.drag(myTouch.position);
                 }
 
                 break;
 
             case TouchPhase.Stationary:
-
+                print("5");
                 touchTimer += Time.deltaTime;
 
                 break;
 
             case TouchPhase.Ended:
-
-                if(!hasMoved)
+                print("6");
+                if (!hasMoved)
                 {
                     if (touchTimer < maxTapTime)
                     {
-                        actOn.tapAt(t.position);
+                        actOn.tapAt(myTouch.position);
                     }
-                }
 
+
+                }
+                print("Removing");
+                myHandler.ImGone(this);
+                Destroy(gameObject);
                 break;
         }
+    }
+
+
+    private void Update()
+    {
+        print("1");
+        HandleTouch();
+    }
+    internal void introductions(Touch t, TouchHandler touchHandler)
+    {
+       myTouch = t;
+       myHandler = touchHandler;
     }
 }
