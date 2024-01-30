@@ -7,16 +7,13 @@ using UnityEngine.UIElements;
 
 public class GestureAction : MonoBehaviour
 {
+    private IInteractable selectedObject;
     [SerializeField] GameObject circle;
-    private float zPos = 10f;
     private float hitDistance;
-    private Vector3 offset;
 
-
-    
     internal void tapAt(Vector2 position)
     {
-        createCircle(position);
+        DeselectObject();
 
         Ray ray = Camera.main.ScreenPointToRay(position);
         RaycastHit hitInfo;
@@ -24,45 +21,37 @@ public class GestureAction : MonoBehaviour
         if(Physics.Raycast(ray, out hitInfo))
         {
             IInteractable objectHit = hitInfo.collider.gameObject.GetComponent<IInteractable>();
+            hitDistance = Vector3.Distance(hitInfo.transform.position, Camera.main.transform.position);
+
+            SelectObject(objectHit);
+
             objectHit.processTap();
         }
     }
 
     internal void drag(Vector2 position)
     {
-        Ray ray = Camera.main.ScreenPointToRay(position);
-        RaycastHit hitInfo;
-
-        if (Physics.Raycast(ray, out hitInfo))
+        if(selectedObject != null)
         {
-            IInteractable objectHit = hitInfo.collider.gameObject.GetComponent<IInteractable>();
-            hitDistance = Vector3.Distance(hitInfo.transform.position, Camera.main.transform.position);
-            print("HitDistance: " + hitDistance);
-            print(hitInfo.transform.position.z - Camera.main.transform.position.z);
-            Vector3 newPos = new Vector3(position.x, position.y, (hitInfo.transform.position.z - Camera.main.transform.position.z));
-            objectHit.processDrag(newPos);
+            Vector3 newPos = new Vector3(position.x, position.y, hitDistance);
+            selectedObject.processDrag(newPos);
         }
     }
 
-    internal GameObject createCircle(Vector2 position)
+    private void SelectObject(IInteractable newObject)
     {
-        Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(position.x, position.y, zPos));
-        GameObject circleGO = Instantiate(circle, worldPos, Quaternion.identity);
+        DeselectObject();
 
-        circleGO.SetActive(true);
-
-        return circleGO;
+        selectedObject = newObject;
+        selectedObject.select();
     }
 
-    internal void selectObject(Vector2 position)
+    private void DeselectObject()
     {
-        Ray ray = Camera.main.ScreenPointToRay(position);
-        RaycastHit hitInfo;
-
-        if (Physics.Raycast(ray, out hitInfo))
+        if (selectedObject != null)
         {
-            IInteractable objectHit = hitInfo.collider.gameObject.GetComponent<IInteractable>();
-            print(objectHit);
+            selectedObject.deSelect();
+            selectedObject = null;
         }
     }
 }
