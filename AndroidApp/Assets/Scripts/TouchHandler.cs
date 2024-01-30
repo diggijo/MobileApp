@@ -1,46 +1,78 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class TouchHandler : MonoBehaviour
 {
-   // private Dictionary<int, TouchManager> touchManagers = new Dictionary<int, TouchManager>();
-    List<TouchManager> touchesAsGO;
-    TouchManager newTouch;
+    private float touchTimer = 0;
+    private float moveTimer = 0;
+    private bool hasMoved = false;
+    private float maxTapTime = 0.25f;
+    private GestureAction actOn;
+    private TouchManager myHandler;
 
-    internal void ImGone(TouchManager touchManager)
+    void Start()
     {
-       touchesAsGO.Remove(touchManager);
-    }
+        actOn = FindObjectOfType<GestureAction>();
 
-    private void Start()
-    {
-        touchesAsGO = new List<TouchManager>();
-    }
-    void Update()
-    {
-        if (Input.touchCount > 0)
+        if (actOn == null)
         {
-            foreach (Touch t in Input.touches)
-            {
-                if (t.phase == TouchPhase.Began)
+            Debug.LogError("GestureAction not found in the scene.");
+        }
+    }
+
+    internal void introductions(TouchManager tH)
+    {
+        myHandler = tH;
+    }
+
+    public void HandleTouch(Touch t)
+    {
+        switch (t.phase)
+        {
+            case TouchPhase.Began:
+
+                hasMoved = false;
+                touchTimer = 0f;
+                moveTimer = 0f;
+
+                break;
+
+            case TouchPhase.Moved:
+
+                moveTimer += Time.deltaTime;
+
+                if (moveTimer > maxTapTime)
                 {
-                    GameObject newTouchObject = new GameObject("NewTouch" + t.fingerId.ToString());
-                    newTouch = newTouchObject.AddComponent<TouchManager>();
-                    touchesAsGO.Add(newTouch);
+                    hasMoved = true;
+                    actOn.drag(t.position);
                 }
 
-                newTouch.introductions(t, this);
+                break;
 
-                // touchManagers[t.fingerId].HandleTouch(t);
+            case TouchPhase.Stationary:
 
-                //if (t.phase == TouchPhase.Ended || t.phase == TouchPhase.Canceled)
-                //{
-                //    Destroy(touchManagers[t.fingerId].gameObject);
-                //    touchManagers.Remove(t.fingerId);
-                //}
-            }
+                touchTimer += Time.deltaTime;
+
+                break;
+
+            case TouchPhase.Ended:
+
+                if (!hasMoved)
+                {
+                    if (touchTimer < maxTapTime)
+                    {
+                        actOn.tapAt(t.position);
+                    }
+                }
+
+                Destroy(gameObject);
+                myHandler.removeTouch(t.fingerId);
+
+                break;
         }
     }
 }

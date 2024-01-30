@@ -2,15 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CapsuleScript : MonoBehaviour//, IInteractable
+public class CapsuleScript : MonoBehaviour, IInteractable
 {
-    private bool selected = false;
     public void processTap()
     {
-        GetComponent<Renderer>().material.color = Color.blue;
+        throw new System.NotImplementedException();
     }
 
-    public void processDrag()
+    public void processDrag(Vector3 position)
     {
+        transform.position = Camera.main.ScreenToWorldPoint(position);
+    }
+
+    public void select()
+    {
+        GetComponent<Renderer>().material.color = Color.red;
+    }
+
+    public void deSelect()
+    {
+        GetComponent<Renderer>().material.color = Color.white;
     }
 }
