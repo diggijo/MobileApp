@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -8,7 +9,6 @@ using UnityEngine.UIElements;
 public class GestureAction : MonoBehaviour
 {
     private IInteractable selectedObject;
-    [SerializeField] GameObject circle;
     private float hitDistance;
 
     internal void tapAt(Vector2 position)
@@ -24,17 +24,38 @@ public class GestureAction : MonoBehaviour
             hitDistance = Vector3.Distance(hitInfo.transform.position, Camera.main.transform.position);
 
             SelectObject(objectHit);
-
-            objectHit.processTap();
         }
     }
 
     internal void drag(Vector2 position)
     {
-        if(selectedObject != null)
+        if (selectedObject != null)
         {
-            Vector3 newPos = new Vector3(position.x, position.y, hitDistance);
-            selectedObject.processDrag(newPos);
+            Ray ray = Camera.main.ScreenPointToRay(position);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                Vector3 newPos;
+
+                if(hit.collider.CompareTag("DragPlane"))
+                {
+                    newPos = new Vector3(position.x, position.y, hit.point.z);
+                }
+
+                else if(hit.collider.CompareTag("Ground"))
+                {
+                    float liftHeight = .5f;
+                    newPos = new Vector3(hit.point.x, hit.point.y + liftHeight, hit.point.z);
+                }
+
+                else
+                {
+                    return;
+                }
+
+                selectedObject.processDrag(newPos);
+            }
         }
     }
 

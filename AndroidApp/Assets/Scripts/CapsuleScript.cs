@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class CapsuleScript : MonoBehaviour, IInteractable
 {
-    public void processTap()
-    {
-        throw new System.NotImplementedException();
-    }
-
     public void processDrag(Vector3 position)
     {
         transform.position = Camera.main.ScreenToWorldPoint(position);

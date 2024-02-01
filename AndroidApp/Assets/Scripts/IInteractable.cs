@@ -4,8 +4,6 @@ using UnityEngine;
 
 public interface IInteractable
 {
-    void processTap();
-
     void processDrag(Vector3 position);
 
     void select();
