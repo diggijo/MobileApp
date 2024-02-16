@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class SphereScript : MonoBehaviour, IInteractable
 {
-    public void processDrag(Vector3 position)
+    public void processDrag(Vector3 position, string dragType)
     {
-        transform.position = Camera.main.ScreenToWorldPoint(position);
+        if(dragType == "Distance")
+        {
+            transform.position = position;
+        }
     }
 
     public void select()
@@ -17,5 +20,12 @@ public class SphereScript : MonoBehaviour, IInteractable
     public void deSelect()
     {
         GetComponent<Renderer>().material.color = Color.white;
+    }
+
+    public void processScale(float scaleMultiplier)
+    {
+        Vector3 newScale = transform.localScale * scaleMultiplier;
+
+        transform.localScale = newScale;
     }
 }
