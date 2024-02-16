@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class SphereScript : MonoBehaviour, IInteractable
 {
-    public void processDrag(Vector3 position)
+    public void processDrag(Vector3 position, string dragType)
     {
-        transform.position = Camera.main.ScreenToWorldPoint(position);
+        if(dragType == "Distance")
+        {
+            transform.position = position;
+        }
     }
 
     public void select()

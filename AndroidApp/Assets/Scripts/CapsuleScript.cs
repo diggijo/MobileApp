@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class CapsuleScript : MonoBehaviour, IInteractable
 {
-    public void processDrag(Vector3 position)
+    public void processDrag(Vector3 position, string dragType)
     {
-        transform.position = Camera.main.ScreenToWorldPoint(position);
+        if(dragType == "DragPlane")
+        {
+            transform.position = Camera.main.ScreenToWorldPoint(position);
+        }
     }
 
     public void select()
