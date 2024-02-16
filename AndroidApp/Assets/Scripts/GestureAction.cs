@@ -12,15 +12,16 @@ public class GestureAction : MonoBehaviour
     private IInteractable selectedObject;
     private float hitDistance;
 
-    internal void tapAt(Vector2 position)
+    internal void tapAt(Touch t)
     {
+        Vector2 position = t.position;
+
         if(selectedObject != null)
         {
             DeselectObject();
         }
 
         Ray ray = Camera.main.ScreenPointToRay(position);
-        Debug.DrawRay(ray.origin, ray.direction * 100f, Color.red, 10);
 
         RaycastHit hitInfo;
 
@@ -36,8 +37,9 @@ public class GestureAction : MonoBehaviour
         }
     }
 
-    internal void drag(Vector2 position)
+    internal void drag(Touch t)
     {
+        Vector2 position = t.position;
         if (selectedObject != null)
         {
             Ray ray = Camera.main.ScreenPointToRay(position);
@@ -71,9 +73,23 @@ public class GestureAction : MonoBehaviour
         }
         else
         {
-            // Code to move the camera when selectedObject is null
-            // Example: Move the camera based on input position
-            Camera.main.transform.Translate(new Vector3(position.x, position.y, 0) * Time.deltaTime);
+            Vector2 delta = t.deltaPosition;
+
+            float cameraSpeed = 0.01f;
+            Vector3 cameraMovement = new Vector3(-delta.x, -delta.y, 0) * cameraSpeed;
+            Camera.main.transform.Translate(cameraMovement, Space.World);
+        }
+    }
+
+    internal void pinch(float pinchDelta)
+    {
+        float pinchScaleFactor = 0.01f;
+
+        if (selectedObject != null)
+        {
+            float scaleMultiplier = 1.0f + pinchDelta * pinchScaleFactor;
+
+            selectedObject.processScale(scaleMultiplier);
         }
     }
 

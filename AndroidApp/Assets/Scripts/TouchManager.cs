@@ -7,6 +7,7 @@ using UnityEngine;
 public class TouchManager : MonoBehaviour
 {
     internal Dictionary<int, TouchHandler> touchHandlers = new Dictionary<int, TouchHandler>();
+    private Plane plane;
 
     void Update()
     {

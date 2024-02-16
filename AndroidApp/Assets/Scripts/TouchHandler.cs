@@ -13,6 +13,7 @@ public class TouchHandler : MonoBehaviour
     private float maxTapTime = 0.25f;
     private GestureAction actOn;
     private TouchManager myHandler;
+    private float initialPinchDistance;
 
     void Start()
     {
@@ -35,6 +36,7 @@ public class TouchHandler : MonoBehaviour
         {
             case TouchPhase.Began:
 
+                initialPinchDistance = 0;
                 hasMoved = false;
                 touchTimer = 0f;
                 moveTimer = 0f;
@@ -48,7 +50,29 @@ public class TouchHandler : MonoBehaviour
                 if (moveTimer > maxTapTime)
                 {
                     hasMoved = true;
-                    actOn.drag(t.position);
+                    actOn.drag(t);
+                }
+
+                if (Input.touchCount >= 2)
+                {
+                    Vector2 touch1 = Input.GetTouch(0).position;
+                    Vector2 touch2 = Input.GetTouch(1).position;
+
+                    float currentPinchDistance = Vector2.Distance(touch1, touch2);
+
+                    if (initialPinchDistance == 0)
+                    {
+                        initialPinchDistance = currentPinchDistance;
+                    }
+
+                    else
+                    {
+                        float pinchDelta = currentPinchDistance - initialPinchDistance;
+
+                        actOn.pinch(pinchDelta);
+
+                        initialPinchDistance = currentPinchDistance;
+                    }
                 }
 
                 break;
@@ -65,7 +89,7 @@ public class TouchHandler : MonoBehaviour
                 {
                     if (touchTimer < maxTapTime)
                     {
-                        actOn.tapAt(t.position);
+                        actOn.tapAt(t);
                     }
                 }
 

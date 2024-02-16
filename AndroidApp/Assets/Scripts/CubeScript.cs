@@ -24,4 +24,11 @@ public class CubeScript : MonoBehaviour, IInteractable
     {
         GetComponent<Renderer>().material.color = Color.white;
     }
+
+    public void processScale(float scaleMultiplier)
+    {
+        Vector3 newScale = transform.localScale * scaleMultiplier;
+
+        transform.localScale = newScale;
+    }
 }
