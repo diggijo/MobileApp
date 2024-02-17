@@ -14,6 +14,7 @@ public class TouchHandler : MonoBehaviour
     private GestureAction actOn;
     private TouchManager myHandler;
     private float initialPinchDistance;
+    private Vector2 initialRotationVector;
 
     void Start()
     {
@@ -36,10 +37,11 @@ public class TouchHandler : MonoBehaviour
         {
             case TouchPhase.Began:
 
-                initialPinchDistance = 0;
                 hasMoved = false;
                 touchTimer = 0f;
                 moveTimer = 0f;
+                initialPinchDistance = 0;
+                initialRotationVector = t.position;
 
                 break;
 
@@ -73,6 +75,23 @@ public class TouchHandler : MonoBehaviour
 
                         initialPinchDistance = currentPinchDistance;
                     }
+                }
+
+                if (Input.touchCount == 2)
+                {
+                    Vector2 currentRotationVector = Input.GetTouch(1).position;
+                    float rotationDelta = Vector2.Angle(initialRotationVector, currentRotationVector);
+
+                    Vector3 cross = Vector3.Cross(initialRotationVector, currentRotationVector);
+
+                    if (cross.z < 0)
+                    {
+                        rotationDelta = -rotationDelta;
+                    }
+
+                    actOn.rotate(rotationDelta);
+
+                    initialRotationVector = currentRotationVector;
                 }
 
                 break;
