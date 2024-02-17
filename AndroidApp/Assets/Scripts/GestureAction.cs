@@ -84,12 +84,34 @@ public class GestureAction : MonoBehaviour
     internal void pinch(float pinchDelta)
     {
         float pinchScaleFactor = 0.01f;
+        float baseScale = 1f;
 
         if (selectedObject != null)
         {
-            float scaleMultiplier = 1.0f + pinchDelta * pinchScaleFactor;
+            float scaleMultiplier = baseScale + pinchDelta * pinchScaleFactor;
 
             selectedObject.processScale(scaleMultiplier);
+        }
+        else
+        {
+            float cameraZoomFactor = 0.1f;
+            Camera.main.fieldOfView -= pinchDelta * cameraZoomFactor;
+        }
+    }
+
+    internal void rotate(float rotationDelta)
+    {
+        float rotationSpeed = 2.0f;
+
+        if (selectedObject != null)
+        {
+            float rotation = rotationDelta * rotationSpeed;
+            selectedObject.processRotation(rotation);
+        }
+
+        else
+        {
+            Camera.main.transform.Rotate(Vector3.up, rotationDelta * rotationSpeed);
         }
     }
 

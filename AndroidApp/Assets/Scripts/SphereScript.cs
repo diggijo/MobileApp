@@ -28,4 +28,9 @@ public class SphereScript : MonoBehaviour, IInteractable
 
         transform.localScale = newScale;
     }
+
+    public void processRotation(float rotation)
+    {
+        throw new System.NotImplementedException();
+    }
 }
