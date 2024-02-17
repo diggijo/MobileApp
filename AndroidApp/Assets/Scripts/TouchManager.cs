@@ -28,7 +28,7 @@ public class TouchManager : MonoBehaviour
         }
     }
 
-    internal void removeTouch(int id)
+    internal void RemoveTouch(int id)
     {
         touchHandlers.Remove(id);
     }

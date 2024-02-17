@@ -52,11 +52,12 @@ public class TouchHandler : MonoBehaviour
                 if (moveTimer > maxTapTime)
                 {
                     hasMoved = true;
-                    actOn.drag(t);
+                    actOn.Drag(t);
                 }
 
                 if (Input.touchCount >= 2)
                 {
+                    //Scale
                     Vector2 touch1 = Input.GetTouch(0).position;
                     Vector2 touch2 = Input.GetTouch(1).position;
 
@@ -71,14 +72,13 @@ public class TouchHandler : MonoBehaviour
                     {
                         float pinchDelta = currentPinchDistance - initialPinchDistance;
 
-                        actOn.pinch(pinchDelta);
+                        actOn.Pinch(pinchDelta);
 
                         initialPinchDistance = currentPinchDistance;
                     }
-                }
 
-                if (Input.touchCount == 2)
-                {
+
+                    //Rotation
                     Vector2 currentRotationVector = Input.GetTouch(1).position;
                     float rotationDelta = Vector2.Angle(initialRotationVector, currentRotationVector);
 
@@ -89,7 +89,7 @@ public class TouchHandler : MonoBehaviour
                         rotationDelta = -rotationDelta;
                     }
 
-                    actOn.rotate(rotationDelta);
+                    actOn.Rotate(rotationDelta);
 
                     initialRotationVector = currentRotationVector;
                 }
@@ -108,12 +108,12 @@ public class TouchHandler : MonoBehaviour
                 {
                     if (touchTimer < maxTapTime)
                     {
-                        actOn.tapAt(t);
+                        actOn.TapAt(t);
                     }
                 }
 
                 Destroy(gameObject);
-                myHandler.removeTouch(t.fingerId);
+                myHandler.RemoveTouch(t.fingerId);
 
                 break;
         }
