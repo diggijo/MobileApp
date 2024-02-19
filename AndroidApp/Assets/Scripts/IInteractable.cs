@@ -4,12 +4,12 @@ using UnityEngine;
 
 public interface IInteractable
 {
-    void processDrag(Vector3 position, string dragType);
+    void ProcessDrag(Vector3 position, string dragType);
 
-    void processScale(float scaleMultiplier);
+    void ProcessScale(float scaleMultiplier);
 
-    void processRotation(float rotation);
-    void select();
+    void ProcessRotation(float rotation);
+    void Select();
 
-    void deSelect();
+    void DeSelect();
 }

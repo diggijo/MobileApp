@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SphereScript : MonoBehaviour, IInteractable
 {
-    public void processDrag(Vector3 position, string dragType)
+    public void ProcessDrag(Vector3 position, string dragType)
     {
         if(dragType == "Distance")
         {
@@ -12,25 +12,25 @@ public class SphereScript : MonoBehaviour, IInteractable
         }
     }
 
-    public void select()
+    public void Select()
     {
         GetComponent<Renderer>().material.color = Color.red;
     }
 
-    public void deSelect()
+    public void DeSelect()
     {
         GetComponent<Renderer>().material.color = Color.white;
     }
 
-    public void processScale(float scaleMultiplier)
+    public void ProcessScale(float scaleMultiplier)
     {
         Vector3 newScale = transform.localScale * scaleMultiplier;
 
         transform.localScale = newScale;
     }
 
-    public void processRotation(float rotation)
+    public void ProcessRotation(float rotation)
     {
-        throw new System.NotImplementedException();
+        transform.Rotate(Vector3.forward, rotation);
     }
 }

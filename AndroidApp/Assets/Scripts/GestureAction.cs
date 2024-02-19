@@ -12,7 +12,7 @@ public class GestureAction : MonoBehaviour
     private IInteractable selectedObject;
     private float hitDistance;
 
-    internal void tapAt(Touch t)
+    internal void TapAt(Touch t)
     {
         Vector2 position = t.position;
 
@@ -37,7 +37,7 @@ public class GestureAction : MonoBehaviour
         }
     }
 
-    internal void drag(Touch t)
+    internal void Drag(Touch t)
     {
         Vector2 position = t.position;
         if (selectedObject != null)
@@ -68,20 +68,24 @@ public class GestureAction : MonoBehaviour
                     newPos = ray.GetPoint(hitDistance);
                 }
 
-                selectedObject.processDrag(newPos, dragType);
+                selectedObject.ProcessDrag(newPos, dragType);
             }
         }
         else
         {
             Vector2 delta = t.deltaPosition;
 
-            float cameraSpeed = 0.01f;
-            Vector3 cameraMovement = new Vector3(-delta.x, -delta.y, 0) * cameraSpeed;
+            float cameraSpeed = 0.01f; 
+
+            Vector3 cameraRight = Camera.main.transform.right;
+            Vector3 cameraUp = Camera.main.transform.up;
+
+            Vector3 cameraMovement = (cameraRight * -delta.x + cameraUp * -delta.y) * cameraSpeed;
             Camera.main.transform.Translate(cameraMovement, Space.World);
         }
     }
 
-    internal void pinch(float pinchDelta)
+    internal void Pinch(float pinchDelta)
     {
         float pinchScaleFactor = 0.01f;
         float baseScale = 1f;
@@ -90,7 +94,7 @@ public class GestureAction : MonoBehaviour
         {
             float scaleMultiplier = baseScale + pinchDelta * pinchScaleFactor;
 
-            selectedObject.processScale(scaleMultiplier);
+            selectedObject.ProcessScale(scaleMultiplier);
         }
         else
         {
@@ -99,19 +103,21 @@ public class GestureAction : MonoBehaviour
         }
     }
 
-    internal void rotate(float rotationDelta)
+    internal void Rotate(float rotationDelta)
     {
         float rotationSpeed = 2.0f;
+        float rotation = rotationDelta * rotationSpeed;
 
         if (selectedObject != null)
         {
-            float rotation = rotationDelta * rotationSpeed;
-            selectedObject.processRotation(rotation);
+            
+            selectedObject.ProcessRotation(rotation);
         }
 
         else
         {
-            Camera.main.transform.Rotate(Vector3.up, rotationDelta * rotationSpeed);
+            rotationSpeed = .5f;
+            Camera.main.transform.Rotate(Vector3.up, rotation);
         }
     }
 
@@ -120,14 +126,14 @@ public class GestureAction : MonoBehaviour
         DeselectObject();
 
         selectedObject = newObject;
-        selectedObject.select();
+        selectedObject.Select();
     }
 
     private void DeselectObject()
     {
         if (selectedObject != null)
         {
-            selectedObject.deSelect();
+            selectedObject.DeSelect();
             selectedObject = null;
         }
     }
