@@ -7,7 +7,6 @@ using UnityEngine;
 public class TouchManager : MonoBehaviour
 {
     internal Dictionary<int, TouchHandler> touchHandlers = new Dictionary<int, TouchHandler>();
-
     void Update()
     {
         if (Input.touchCount > 0)

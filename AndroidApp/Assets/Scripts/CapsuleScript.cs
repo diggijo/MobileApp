@@ -31,6 +31,6 @@ public class CapsuleScript : MonoBehaviour, IInteractable
 
     public void ProcessRotation(float rotation)
     {
-        throw new System.NotImplementedException();
+        transform.Rotate(Vector3.forward, rotation);
     }
 }
