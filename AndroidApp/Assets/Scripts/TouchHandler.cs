@@ -12,13 +12,14 @@ public class TouchHandler : MonoBehaviour
     private bool hasMoved = false;
     private float maxTapTime = 0.25f;
     private float minPinchDistance = 2.5f;
-    private bool isPinching = false;
     private float minRotateAngle = .2f;
-    private bool isRotating = false;
     private GestureAction actOn;
     private TouchManager myHandler;
     private float initialPinchDistance;
     private Vector2 initialRotationVector = new Vector2(0, 0);
+    private bool isDragging = false;
+    private bool isRotating = false;
+    private bool isPinching = false;
 
     void Start()
     {
@@ -57,76 +58,54 @@ public class TouchHandler : MonoBehaviour
                 {
                     hasMoved = true;
                     
-                    if(!isPinching && !isRotating)
+                    if(Input.touchCount == 1)
                     {
                         actOn.Drag(t);
                     }
                 }
 
-                if (Input.touchCount >= 2)
+                if (Input.touchCount == 2)
                 {
-                    for (int i = 0; i < Input.touchCount; i++)
+                    Vector2 touch1Pos = Input.GetTouch(0).position;
+                    Vector2 touch2Pos = Input.GetTouch(1).position;
+
+                    float currentPinchDistance = Vector2.Distance(touch1Pos, touch2Pos);
+
+                    if (initialPinchDistance == 0)
                     {
-                        Touch currentTouch = Input.GetTouch(i);
-
-                        // Scale (Pinch)
-                        if (i < Input.touchCount - 1)
-                        {
-                            Vector2 touch1 = currentTouch.position;
-                            Vector2 touch2 = Input.GetTouch(i + 1).position;
-
-                            float currentPinchDistance = Vector2.Distance(touch1, touch2);
-
-                            if (initialPinchDistance == 0)
-                            {
-                                initialPinchDistance = currentPinchDistance;
-                            }
-
-                            else
-                            {
-                                float pinchDelta = currentPinchDistance - initialPinchDistance;
-
-                                if (Mathf.Abs(pinchDelta) > minPinchDistance)
-                                {
-                                    isPinching = true;
-                                    actOn.Pinch(pinchDelta);
-                                }
-
-                                else
-                                {
-                                    isPinching = false;
-                                }
-
-                                initialPinchDistance = currentPinchDistance;
-                            }
-                        }
-
-                        // Rotation
-                        if (i < Input.touchCount - 1)
-                        {
-                            Vector2 currentRotationVector = Input.GetTouch(i + 1).position;
-                            float rotationDelta = Vector2.Angle(initialRotationVector, currentRotationVector);
-
-                            Vector3 cross = Vector3.Cross(initialRotationVector, currentRotationVector);
-
-                            if (cross.z > 0)
-                            {
-                                rotationDelta = -rotationDelta;
-                            }
-
-                            if (Mathf.Abs(rotationDelta) > minRotateAngle)
-                            {
-                                isRotating = true;
-                                actOn.Rotate(rotationDelta);
-                            }
-                            else
-                            {
-                                isRotating = false;
-                            }
-
-                            initialRotationVector = currentRotationVector;
-                        }
+                        initialPinchDistance = currentPinchDistance;
                     }
+
+                    else
+                    {
+                        float pinchDelta = currentPinchDistance - initialPinchDistance;
+
+                        if (Mathf.Abs(pinchDelta) > minPinchDistance)
+                        {
+                            actOn.Pinch(pinchDelta);
+                        }
+
+                        initialPinchDistance = currentPinchDistance;
+                    }
+
+                    Vector2 currentRotationVector = touch2Pos;
+
+                    float rotationDelta = Vector2.Angle(initialRotationVector, currentRotationVector);
+
+                    Vector3 cross = Vector3.Cross(initialRotationVector, currentRotationVector);
+
+                    if (cross.z > 0)
+                    {
+                        rotationDelta = -rotationDelta;
+                    }
+
+                    if (Mathf.Abs(rotationDelta) > minRotateAngle)
+                    {
+                        isRotating = true;
+                        actOn.Rotate(rotationDelta);
+                    }
+
+                    initialRotationVector = currentRotationVector;
                 }
 
                 break;
