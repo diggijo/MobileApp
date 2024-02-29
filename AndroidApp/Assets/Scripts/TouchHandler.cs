@@ -12,11 +12,14 @@ public class TouchHandler : MonoBehaviour
     private bool hasMoved = false;
     private float maxTapTime = 0.25f;
     private float minPinchDistance = 2.5f;
-    private float minRotateAngle = .2f;
+    private float minRotateAngle = .1f;
+    private float maxRotateAngle = 10f;
     private GestureAction actOn;
     private TouchManager myHandler;
     private float initialPinchDistance;
     private Vector2 initialRotationVector = new Vector2(0, 0);
+    Vector2 touch1StartPos;
+    Vector2 touch2StartPos;
     private bool isDragging = false;
     private bool isRotating = false;
     private bool isPinching = false;
@@ -64,11 +67,17 @@ public class TouchHandler : MonoBehaviour
                     }
                 }
 
+                else
+                {
+                    actOn.Swipe(t);
+                }
+
                 if (Input.touchCount == 2)
                 {
                     Vector2 touch1Pos = Input.GetTouch(0).position;
                     Vector2 touch2Pos = Input.GetTouch(1).position;
 
+                    //Pinch
                     float currentPinchDistance = Vector2.Distance(touch1Pos, touch2Pos);
 
                     if (initialPinchDistance == 0)
@@ -88,6 +97,8 @@ public class TouchHandler : MonoBehaviour
                         initialPinchDistance = currentPinchDistance;
                     }
 
+
+                    //Rotation
                     Vector2 currentRotationVector = touch2Pos;
 
                     float rotationDelta = Vector2.Angle(initialRotationVector, currentRotationVector);
@@ -96,10 +107,10 @@ public class TouchHandler : MonoBehaviour
 
                     if (cross.z > 0)
                     {
-                        rotationDelta = -rotationDelta;
+                       rotationDelta = -rotationDelta;
                     }
 
-                    if (Mathf.Abs(rotationDelta) > minRotateAngle)
+                    if (Mathf.Abs(rotationDelta) > minRotateAngle && Mathf.Abs(rotationDelta) < maxRotateAngle)
                     {
                         isRotating = true;
                         actOn.Rotate(rotationDelta);
@@ -132,4 +143,5 @@ public class TouchHandler : MonoBehaviour
                 break;
         }
     }
+
 }
