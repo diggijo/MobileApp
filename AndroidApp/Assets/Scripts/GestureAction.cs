@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEditor.PackageManager;
 using UnityEngine;
@@ -74,20 +75,7 @@ public class GestureAction : MonoBehaviour
         }
         else
         {
-            //NEW ROTATION METHOD TO BE BUILT IN
-
-
-
-            // TO BE IMPLEMENTED IN A SWIPE
-            /*Vector2 delta = t.deltaPosition;
-
-            float cameraSpeed = 0.01f; 
-
-            Vector3 cameraRight = Camera.main.transform.right;
-            Vector3 cameraUp = Camera.main.transform.up;
-
-            Vector3 cameraMovement = (cameraRight * -delta.x + cameraUp * -delta.y) * cameraSpeed;
-            Camera.main.transform.Translate(cameraMovement, Space.World);*/
+            //ROTATE CAMERA ON DRAG
         }
     }
 
@@ -116,14 +104,13 @@ public class GestureAction : MonoBehaviour
 
         if (selectedObject != null)
         {
-            
             selectedObject.ProcessRotation(rotation);
         }
 
         else
         {
-            //rotationSpeed = .5f;
-            //Camera.main.transform.Rotate(Vector3.up, rotation);
+            rotationSpeed = .5f;
+            Camera.main.transform.Rotate(Vector3.forward, rotation);
         }
     }
 
@@ -141,6 +128,22 @@ public class GestureAction : MonoBehaviour
         {
             selectedObject.DeSelect();
             selectedObject = null;
+        }
+    }
+
+    internal void Swipe(Touch t)
+    {
+        if (selectedObject == null)
+        {
+            Vector2 delta = t.deltaPosition;
+
+            float cameraSpeed = 0.005f;
+
+            Vector3 cameraRight = Camera.main.transform.right;
+            Vector3 cameraUp = Camera.main.transform.up;
+
+            Vector3 cameraMovement = (cameraRight * -delta.x + cameraUp * -delta.y) * cameraSpeed;
+            Camera.main.transform.Translate(cameraMovement, Space.World);
         }
     }
 }
