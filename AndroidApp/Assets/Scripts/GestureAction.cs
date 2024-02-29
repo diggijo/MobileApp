@@ -11,6 +11,7 @@ public class GestureAction : MonoBehaviour
 {
     private IInteractable selectedObject;
     private float hitDistance;
+    private float rotationSpeed;
 
     internal void TapAt(Touch t)
     {
@@ -73,7 +74,12 @@ public class GestureAction : MonoBehaviour
         }
         else
         {
-            Vector2 delta = t.deltaPosition;
+            //NEW ROTATION METHOD TO BE BUILT IN
+
+
+
+            // TO BE IMPLEMENTED IN A SWIPE
+            /*Vector2 delta = t.deltaPosition;
 
             float cameraSpeed = 0.01f; 
 
@@ -81,7 +87,7 @@ public class GestureAction : MonoBehaviour
             Vector3 cameraUp = Camera.main.transform.up;
 
             Vector3 cameraMovement = (cameraRight * -delta.x + cameraUp * -delta.y) * cameraSpeed;
-            Camera.main.transform.Translate(cameraMovement, Space.World);
+            Camera.main.transform.Translate(cameraMovement, Space.World);*/
         }
     }
 
@@ -105,7 +111,7 @@ public class GestureAction : MonoBehaviour
 
     internal void Rotate(float rotationDelta)
     {
-        float rotationSpeed = 2.0f;
+        rotationSpeed = 2.0f;
         float rotation = rotationDelta * rotationSpeed;
 
         if (selectedObject != null)
@@ -116,8 +122,8 @@ public class GestureAction : MonoBehaviour
 
         else
         {
-            rotationSpeed = .5f;
-            Camera.main.transform.Rotate(Vector3.up, rotation);
+            //rotationSpeed = .5f;
+            //Camera.main.transform.Rotate(Vector3.up, rotation);
         }
     }
 

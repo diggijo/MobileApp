@@ -9,6 +9,7 @@ public interface IInteractable
     void ProcessScale(float scaleMultiplier);
 
     void ProcessRotation(float rotation);
+
     void Select();
 
     void DeSelect();
