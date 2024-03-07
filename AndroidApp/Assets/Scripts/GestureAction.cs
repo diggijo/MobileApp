@@ -13,6 +13,25 @@ public class GestureAction : MonoBehaviour
     private IInteractable selectedObject;
     private float hitDistance;
     private float rotationSpeed;
+    private float initialPinchDistance = 0;
+    private float minPinchDistance = 2.5f;
+
+    void Start()
+    {
+        TouchManager touchManager = FindObjectOfType<TouchManager>();
+
+        if (touchManager != null)
+        {
+            touchManager.OnDrag += Drag;
+            touchManager.OnRotate += Rotate;
+            touchManager.OnPinch += Pinch;
+            touchManager.OnTap += TapAt;
+        }
+        else
+        {
+            Debug.LogError("TouchManager not found in the scene.");
+        }
+    }
 
     internal void TapAt(Touch t)
     {
@@ -79,21 +98,42 @@ public class GestureAction : MonoBehaviour
         }
     }
 
-    internal void Pinch(float pinchDelta)
+    internal void Pinch(float distance)
     {
-        float pinchScaleFactor = 0.01f;
-        float baseScale = 1f;
-
-        if (selectedObject != null)
+        if (initialPinchDistance == 0)
         {
-            float scaleMultiplier = baseScale + pinchDelta * pinchScaleFactor;
-
-            selectedObject.ProcessScale(scaleMultiplier);
+            initialPinchDistance = distance;
         }
         else
         {
-            float cameraZoomFactor = 0.1f;
-            Camera.main.fieldOfView -= pinchDelta * cameraZoomFactor;
+            float pinchDelta = distance - initialPinchDistance;
+
+            if (Mathf.Abs(pinchDelta) > minPinchDistance)
+            {
+                float pinchScaleFactor = 0.01f;
+                float baseScale = 1f;
+
+                if (selectedObject != null)
+                {
+                    float scaleMultiplier = baseScale + pinchDelta * pinchScaleFactor;
+
+                    scaleMultiplier = Mathf.Clamp(scaleMultiplier, 0.5f, 2.0f);
+
+                    selectedObject.ProcessScale(scaleMultiplier);
+                }
+                else
+                {
+                    float cameraZoomFactor = 0.1f;
+                    // Optional: Smooth the camera zoom transition
+                    float smoothness = 0.5f;
+                    Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, Camera.main.fieldOfView - pinchDelta * cameraZoomFactor, smoothness);
+
+                    // Optional: Clamp the camera field of view
+                    Camera.main.fieldOfView = Mathf.Clamp(Camera.main.fieldOfView, 10f, 60f);
+                }
+            }
+
+            initialPinchDistance = distance;
         }
     }
 
