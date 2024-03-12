@@ -98,42 +98,21 @@ public class GestureAction : MonoBehaviour
         }
     }
 
-    internal void Pinch(float distance)
+    internal void Pinch(float pinchDelta)
     {
-        if (initialPinchDistance == 0)
+        float pinchScaleFactor = 0.01f;
+        float baseScale = 1f;
+
+        if (selectedObject != null)
         {
-            initialPinchDistance = distance;
+            float scaleMultiplier = baseScale + pinchDelta * pinchScaleFactor;
+
+            selectedObject.ProcessScale(scaleMultiplier);
         }
         else
         {
-            float pinchDelta = distance - initialPinchDistance;
-
-            if (Mathf.Abs(pinchDelta) > minPinchDistance)
-            {
-                float pinchScaleFactor = 0.01f;
-                float baseScale = 1f;
-
-                if (selectedObject != null)
-                {
-                    float scaleMultiplier = baseScale + pinchDelta * pinchScaleFactor;
-
-                    scaleMultiplier = Mathf.Clamp(scaleMultiplier, 0.5f, 2.0f);
-
-                    selectedObject.ProcessScale(scaleMultiplier);
-                }
-                else
-                {
-                    float cameraZoomFactor = 0.1f;
-                    // Optional: Smooth the camera zoom transition
-                    float smoothness = 0.5f;
-                    Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, Camera.main.fieldOfView - pinchDelta * cameraZoomFactor, smoothness);
-
-                    // Optional: Clamp the camera field of view
-                    Camera.main.fieldOfView = Mathf.Clamp(Camera.main.fieldOfView, 10f, 60f);
-                }
-            }
-
-            initialPinchDistance = distance;
+            float cameraZoomFactor = 0.1f;
+            Camera.main.fieldOfView -= pinchDelta * cameraZoomFactor;
         }
     }
 

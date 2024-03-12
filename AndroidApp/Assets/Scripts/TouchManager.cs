@@ -12,13 +12,15 @@ public class TouchManager : MonoBehaviour
     public event Action<float> OnPinch;
     public event Action<Touch> OnTap;
     public event Action<Touch> OnSwipe;
+    private float initialPinchDistance = 0;
+    private float minPinchDistance = 2.5f;
+    private float pinchDelta = 0;
 
     private enum CurrentAction
     {
         None,
         Drag,
-        Rotate,
-        Pinch,
+        PinchRotate,
         Tap
     }
 
@@ -64,19 +66,39 @@ public class TouchManager : MonoBehaviour
 
     internal void SetRotate(float touch)
     {
-        if (currentAction == CurrentAction.None || currentAction == CurrentAction.Pinch)
+        if (currentAction == CurrentAction.None)
         {
-            currentAction = CurrentAction.Rotate;
+            currentAction = CurrentAction.PinchRotate;
             OnRotate?.Invoke(touch);
         }
     }
 
     internal void SetPinch(Touch t1, Touch t2)
     {
-        if (currentAction == CurrentAction.None || currentAction == CurrentAction.Rotate)
+        Vector2 touch1Pos = t1.position;
+        Vector2 touch2Pos = t2.position;
+
+        if (currentAction == CurrentAction.None)
         {
-            currentAction = CurrentAction.Pinch;
-            OnPinch?.Invoke(Vector2.Distance(t1.position, t2.position));
+            currentAction = CurrentAction.PinchRotate;
+            float currentPinchDistance = Vector2.Distance(touch1Pos, touch2Pos);
+
+            if (initialPinchDistance == 0)
+            {
+                initialPinchDistance = currentPinchDistance;
+            }
+
+            else
+            {
+                pinchDelta = currentPinchDistance - initialPinchDistance;
+
+                if (Mathf.Abs(pinchDelta) > minPinchDistance)
+                {
+                    OnPinch?.Invoke(pinchDelta);
+                }
+
+                initialPinchDistance = currentPinchDistance;
+            }
         }
     }
 
@@ -100,14 +122,10 @@ public class TouchManager : MonoBehaviour
                     OnDrag?.Invoke(touchHandler.firstTouch);
                 }
 
-                /*if (currentAction == CurrentAction.Rotate)
+                if (currentAction == CurrentAction.PinchRotate)
                 {
-                    OnRotate?.Invoke(touchHandler.RotationDelta);
-                }*/
-
-                if (currentAction == CurrentAction.Pinch)
-                {
-                    OnPinch?.Invoke(Vector2.Distance(touchHandler.firstTouch.position, touchHandler.secondTouch.position));
+                    OnPinch?.Invoke(pinchDelta);
+                    //OnRotate?.Invoke(touchHandler.RotationDelta);
                 }
             }
         }
