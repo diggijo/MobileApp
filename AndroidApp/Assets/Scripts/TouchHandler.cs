@@ -18,11 +18,8 @@ public class TouchHandler : MonoBehaviour
     private TouchManager myHandler;
     private float initialPinchDistance;
     private Vector2 initialRotationVector = new Vector2(0, 0);
-    Vector2 touch1StartPos;
-    Vector2 touch2StartPos;
-    private bool isDragging = false;
-    private bool isRotating = false;
-    private bool isPinching = false;
+    internal Touch firstTouch;
+    internal Touch secondTouch;
 
     void Start()
     {
@@ -41,6 +38,8 @@ public class TouchHandler : MonoBehaviour
 
     public void HandleTouch(Touch t)
     {
+        firstTouch = t;
+
         switch (t.phase)
         {
             case TouchPhase.Began:
@@ -63,7 +62,8 @@ public class TouchHandler : MonoBehaviour
                     
                     if(Input.touchCount == 1)
                     {
-                        actOn.Drag(t);
+                        print(myHandler.touchHandlers[t.fingerId]);
+                        myHandler.SetDrag(t);
                     }
                 }
 
@@ -74,7 +74,14 @@ public class TouchHandler : MonoBehaviour
 
                 if (Input.touchCount == 2)
                 {
-                    Vector2 touch1Pos = Input.GetTouch(0).position;
+                    firstTouch = Input.GetTouch(0);
+                    secondTouch = Input.GetTouch(1);
+
+                    myHandler.SetPinch(firstTouch, secondTouch);
+
+
+
+                    /*Vector2 touch1Pos = Input.GetTouch(0).position;
                     Vector2 touch2Pos = Input.GetTouch(1).position;
 
                     //Pinch
@@ -91,7 +98,7 @@ public class TouchHandler : MonoBehaviour
 
                         if (Mathf.Abs(pinchDelta) > minPinchDistance)
                         {
-                            actOn.Pinch(pinchDelta);
+                            myHandler.SetPinch(pinchDelta);
                         }
 
                         initialPinchDistance = currentPinchDistance;
@@ -112,11 +119,10 @@ public class TouchHandler : MonoBehaviour
 
                     if (Mathf.Abs(rotationDelta) > minRotateAngle && Mathf.Abs(rotationDelta) < maxRotateAngle)
                     {
-                        isRotating = true;
-                        actOn.Rotate(rotationDelta);
+                        myHandler.SetRotate(rotationDelta);
                     }
 
-                    initialRotationVector = currentRotationVector;
+                    initialRotationVector = currentRotationVector;*/
                 }
 
                 break;
@@ -133,7 +139,7 @@ public class TouchHandler : MonoBehaviour
                 {
                     if (touchTimer < maxTapTime)
                     {
-                        actOn.TapAt(t);
+                        myHandler.SetTap(t);
                     }
                 }
 
